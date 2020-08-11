@@ -1,0 +1,9 @@
+@media (min-width: 100px) and (max-width: 700px) {
+	.sidebar {
+		display: none;
+	}
+}
+.nav-link, .navbar-brand {
+	margin-left: 25px;
+	font-size: 22px;
+}
