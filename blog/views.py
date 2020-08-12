@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
+from django.views.defaults import page_not_found
 
 from .models import Post
 
@@ -21,3 +22,7 @@ def about(request):
 
 def contact(request):
 	return render(request, "blog/contact.html")
+
+
+def handler404(request, exception):
+	return page_not_found(request, exception, template_name="blog/404.html")

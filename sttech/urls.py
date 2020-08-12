@@ -15,6 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls import handler404, handler500
+
+import blog.views as blog_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -22,3 +25,6 @@ urlpatterns = [
     path("python-tutorial/", include('python.urls')),
     path('java-tutorial/', include('java.urls'))
 ]
+
+handler404 = blog_views.handler404
+# handler500 = blog.views.handler500
