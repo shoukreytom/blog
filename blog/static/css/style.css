@@ -3,6 +3,9 @@
 		display: none;
 	}
 }
+.navbar {
+	min-height: 80px!important;
+}
 .nav-link, .navbar-brand {
 	margin-left: 25px;
 	font-size: 22px;
