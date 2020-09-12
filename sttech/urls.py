@@ -23,7 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('blog.urls')),
     path("python-tutorial/", include('python.urls')),
-    path('java-tutorial/', include('java.urls'))
+    path('java-tutorial/', include('java.urls')),
+
+    # api
+    path("api/blog/", include('blog.api.urls')),
 ]
 
 handler404 = blog_views.handler404
