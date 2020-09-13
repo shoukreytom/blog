@@ -1,6 +1,20 @@
 {% extends "blog/layout.html" %}
+{% load static %}
 
 {% block title %}STTech - About{% endblock %}
 
 {% block main %}
+<div class="container">
+    <div class="jumbotron text-center">
+        <b>Welcome to STTech!!! The place where you'll find tips and roadmaps for your learning path. </b>
+    </div>
+    <div class="jumbotron">
+        <h1 class="text-center">The Author</h1>
+        <div class="mt-4 text-center">
+            <img class="rounded-circle" src="{% static 'author.jpg' %}" alt="Shoukrey" height="200">
+            <h4 class="py-4">Abdul Shakoor Tom, Sudan</h4>
+        </div>
+    </div>
+    <h5 class="text-center text-muted mb-4">&copy;STTech</h5>
+</div>
 {% endblock %}
