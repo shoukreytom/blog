@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import View, ListView, DetailView
 from django.views.defaults import page_not_found
 from django.core.mail import EmailMessage, send_mail
 from django.conf import settings
@@ -24,18 +24,22 @@ def about(request):
     return render(request, "blog/about.html")
 
 
-def contact(request):
-    if request.method == "POST":
+class ContactView(View):
+    def get(self, request):
+        form = ContactForm()
+        context = {"form": form}
+        return render(request, "blog/contact.html", context)
+
+    def post(self, request):
         form = ContactForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             name = request.POST['name']
             email = request.POST['email']
             message = request.POST['message']
             send_mail('sttech feedback ({})'.format(name), message, email,
                       [settings.EMAIL_HOST_USER, ], fail_silently=False)
-        return redirect('blog-home')
-    form = ContactForm()
-    return render(request, "blog/contact.html", {'form': form})
+            return redirect('blog-home')
+        return redirect(request.path)
 
 
 def handler404(request, exception):
