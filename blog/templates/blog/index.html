@@ -11,11 +11,11 @@
 		<article class="media content-section mb-4">
 			<div class="media-body border bg-light">
 				<div class="article-metadata border-bottom px-4 py-2">
-					<a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
-					<small class="text-muted ml-2">{{ post.date_posted }}</small>
+					<a class="article-title" href="{% url 'post-detail' post.slug %}">{{ post.title }}</a>
+					<small class="text-muted ml-2">{{ post.publish }}</small>
 				</div>
 				<div class="article-content px-4 py-3">
-					<p>{{ post.summary }}</p>
+					<p>{{ post.content }}</p>
 				</div>
 			</div>
 		</article>
@@ -31,7 +31,7 @@
 			<ul class="list-group mt-4">
 				{% for post in posts %}
 				<li class="list-group-item list-group-item-light"><a
-						href="{% url 'post-detail' post.id %}">{{ post.title }}</a></li>
+						href="{% url 'post-detail' post.slug %}">{{ post.title }}</a></li>
 				{% endfor %}
 			</ul>
 		</div>

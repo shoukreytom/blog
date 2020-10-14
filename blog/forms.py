@@ -3,11 +3,11 @@ from django import forms
 
 class ContactForm(forms.Form):
     name = forms.CharField(max_length=30, widget=forms.TextInput(
-        attrs={'placeholder': 'full name'}))
+        attrs={'placeholder': 'full name', 'class': 'form-control'}))
     email = forms.EmailField(widget=forms.TextInput(
-        attrs={'placeholder': 'joe@example.com'}))
+        attrs={'placeholder': 'joe@example.com', 'class': 'form-control'}))
     message = forms.CharField(max_length=150, widget=forms.Textarea(
-        attrs={'placeholder': 'leave a message here'}))
+        attrs={'placeholder': 'leave a message here', 'class': 'form-control'}))
 
     def clean_name(self):
         name = self.cleaned_data['name']

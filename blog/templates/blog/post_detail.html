@@ -5,7 +5,7 @@
 {% block main %}
 	<div class="container w-75">
 		<h1 class="px-2 py-5">{{ object.title }}</h1>
-		<p class="px-2">{{ object.body|safe }}</p>
-		<b class="text-muted p-2">Posted on: </b><small class="text-muted">{{ object.date_posted }}</small>
+		<p class="px-2">{{ object.content|safe }}</p>
+		<b class="text-muted p-2">Posted on: </b><small class="text-muted">{{ object.publish }}</small>
 	</div>
 {% endblock %}

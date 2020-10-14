@@ -9,11 +9,14 @@ from .forms import ContactForm
 
 
 class PostsList(ListView):
-    model = Post
+    # model = Post
     template_name = "blog/index.html"
     context_object_name = "posts"
     paginated_by = 15
-    ordering = ['-date_posted']
+    ordering = ['-publish']
+
+    def get_queryset(self):
+        return Post.published.values()
 
 
 class PostDetail(DetailView):
