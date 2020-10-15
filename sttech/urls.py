@@ -17,6 +17,7 @@ urlpatterns = [
     # api
     path("api/blog/", include('blog.api.urls')),
 ]
+urlpatterns += static.static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = blog_views.handler404

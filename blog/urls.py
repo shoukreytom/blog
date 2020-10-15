@@ -1,6 +1,5 @@
 from django.urls import path, re_path
 from django.conf import settings
-from django.conf.urls.static import static
 
 from . import views
 
@@ -12,5 +11,3 @@ urlpatterns = [
     path('about/', views.about, name="about"),
     path('contact/', views.ContactView.as_view(), name="contact")
 ]
-
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

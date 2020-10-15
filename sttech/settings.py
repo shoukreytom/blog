@@ -1,5 +1,7 @@
 import os
 
+import django_heroku
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -129,6 +131,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-if not DEBUG:
-    import django_heroku
-    django_heroku.settings(locals())
+django_heroku.settings(locals())
