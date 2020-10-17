@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 from django.urls import reverse_lazy
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 class PublishedManager(models.Manager):
@@ -14,7 +17,7 @@ class Post(models.Model):
         ('draft', 'Draft'),
     ]
     title = models.CharField(max_length=250)
-    slug = models.SlugField(max_length=250, unique=True)
+    slug = models.SlugField(max_length=250, unique=True, blank=True)
     content = models.TextField()
     status = models.CharField(
         max_length=10, choices=STATUS_CHOICES, default='draft')
@@ -27,3 +30,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+@receiver(pre_save, sender=Post)
+def fill_slug_field(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = slugify(instance.title)
