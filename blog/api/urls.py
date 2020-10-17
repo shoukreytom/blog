@@ -1,11 +1,14 @@
 from django.urls import path
 
-from blog.api.views import post_detail_view
+from blog.api.views import PostApiList, post_detail_view, PostDestroyApi
 
 
 app_name = "blog"
 
 
 urlpatterns = [
-    path("<int:pk>/", post_detail_view, name="detail"),
+    path('', PostApiList.as_view()),
+    path('posts/', PostApiList.as_view()),
+    path('<int:pk>/', post_detail_view),
+    path('<int:pk>/delete/', PostDestroyApi.as_view()),
 ]
