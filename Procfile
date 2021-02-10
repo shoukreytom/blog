@@ -1,1 +1,1 @@
-web: gunicorn sttech.wsgi
+web: gunicorn config.wsgi
