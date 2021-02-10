@@ -8,6 +8,7 @@ import blog.views as blog_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('blog.urls')),
+    path('accounts/', include('accounts.urls')),
 
     # summernote
     path('summernote/', include('django_summernote.urls')),
