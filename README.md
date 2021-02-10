@@ -1,1 +1,2 @@
-# sttech
+# Blog
+  simple blog for beginners
