@@ -46,4 +46,4 @@ class ContactView(View):
 
 
 def handler404(request, exception):
-    return page_not_found(request, exception, template_name="blog/404.html")
+    return page_not_found(request, exception, template_name="errors/404.html")
