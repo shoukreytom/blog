@@ -3,6 +3,16 @@
 {% block title %}STTech - Home{% endblock %}
 
 {% block main %}
+
+{% for message in messages %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+	<center>{{ message }}</center>
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	  <span aria-hidden="true">&times;</span>
+	</button>
+</div>
+{% endfor %}
+
 <div class="row">
 
 	<!-- posts -->
@@ -30,8 +40,8 @@
 			</p>
 			<ul class="list-group mt-4">
 				{% for post in posts %}
-				<li class="list-group-item list-group-item-light"><a
-						href="{% url 'post-detail' post.slug %}">{{ post.title }}</a></li>
+				<li class="list-group-item list-group-item-light"><a href="{% url 'post-detail' post.slug %}">{{
+						post.title }}</a></li>
 				{% endfor %}
 			</ul>
 		</div>
