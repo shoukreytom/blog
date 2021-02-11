@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.db.utils import IntegrityError
 
 from accounts.models import Account
@@ -49,7 +49,12 @@ def signin(request):
     return render(request, 'accounts/signin.html')
 
 def signout(request):
-    pass
+    if request.user.is_authenticated:
+        logout(request)
+        return redirect('blog-home')
+    else:
+        messages.error(request, "you're not logged in. please login instead.")
+        return redirect('signin')
 
 def profile(request):
     pass
