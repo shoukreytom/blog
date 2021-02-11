@@ -149,5 +149,4 @@ staticfiles/
 # json files
 *.json
 
-# migrations
-migrations/000*
+media/
