@@ -57,4 +57,4 @@ def signout(request):
         return redirect('signin')
 
 def profile(request):
-    pass
+    return render(request, 'accounts/profile.html')

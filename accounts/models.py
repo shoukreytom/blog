@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+from django.conf import settings
 
 from .managers import AccountManager
 
@@ -27,3 +28,11 @@ class Account(AbstractBaseUser):
     
     def has_module_perms(self, app_labbel):
         return True
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(Account, on_delete=models.CASCADE, default=settings.AUTH_USER_MODEL, related_name='profile')
+    image = models.ImageField(upload_to='profile-pics/', default='default.jpg')
+
+    def __str__(self):
+        return "<Profile <{0}>>".format(self.user.username)
