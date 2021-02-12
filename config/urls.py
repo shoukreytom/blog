@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path, include
 from django.conf import settings
 from django.conf.urls import handler404, handler500, static
 
@@ -9,9 +9,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('blog.urls')),
     path('accounts/', include('accounts.urls')),
-
-    # summernote
-    path('summernote/', include('django_summernote.urls')),
 
     # api
     path("api/blog/", include('blog.api.urls')),
