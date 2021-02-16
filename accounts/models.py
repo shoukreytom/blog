@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from .managers import AccountManager
 
@@ -36,3 +38,10 @@ class Profile(models.Model):
 
     def __str__(self):
         return "<Profile <{0}>>".format(self.user.username)
+
+
+@receiver(post_save, sender=Account)
+def save_profile(sender, instance=None, created=None, *args, **kwargs):
+    if created:
+        profile = Profile.objects.create(user=instance)
+        profile.save()
