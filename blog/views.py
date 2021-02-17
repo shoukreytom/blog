@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect
-from django.views.generic import View, ListView, DetailView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views.defaults import page_not_found
+from django.contrib import messages
 from django.core.mail import EmailMessage, send_mail
 from django.conf import settings
 
 from .models import Post
-from .forms import ContactForm
+from .forms import CreatePostForm, ContactForm
 
 
 class PostsList(ListView):
-    # model = Post
     template_name = "blog/index.html"
     context_object_name = "posts"
     paginated_by = 15
@@ -21,6 +21,29 @@ class PostsList(ListView):
 
 class PostDetail(DetailView):
     model = Post
+
+class CreatePost(CreateView):
+    empty_form = CreatePostForm()
+    def get(self, request, *args, **kwargs):
+        ctx = {
+            'form': self.empty_form,
+        }
+        return render(request, "blog/create_post.html", ctx)
+    
+    def post(self, request, *args, **kwargs):
+        filled_form = CreatePostForm(request.POST)
+        if filled_form.is_valid():
+            post = filled_form.save(commit=False)
+            post.author = request.user
+            post.save()
+            messages.success(request, "Your post has been added successfully.")
+            return redirect('blog-home')
+        else:
+            messages.error(request, "please make sure that you've filled all field with a valid data.")
+        ctx = {
+            'form': self.empty_form,
+        }
+        return render(request, "blog/create_post.html")
 
 
 def about(request):

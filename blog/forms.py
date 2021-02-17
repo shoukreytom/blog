@@ -1,4 +1,11 @@
+from blog.models import Post
 from django import forms
+
+
+class CreatePostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content']
 
 
 class ContactForm(forms.Form):
