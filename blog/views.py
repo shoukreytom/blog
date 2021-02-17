@@ -53,6 +53,12 @@ class UpdatePost(UpdateView):
     success_url = '/'
 
 
+class DeletePost(DeleteView):
+    model = Post
+    success_url = '/'
+    template_name = "blog/delete_post.html"
+
+
 def about(request):
     return render(request, "blog/about.html")
 
