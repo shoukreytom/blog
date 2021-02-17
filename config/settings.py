@@ -17,6 +17,8 @@ if os.path.exists(BASE_DIR / '.env'):
     from decouple import config
     SECRET_KEY = config('SECRET_KEY')
     DEBUG = config('DEBUG') == 'True'
+    EMAIL_HOST_USER = config("EMAIL_USER")
+    EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD")
 else:
     SECRET_KEY = os.environ.get("SECRET_KEY")
     DEBUG = (os.environ.get("DEBUG_VALUE") == "True")

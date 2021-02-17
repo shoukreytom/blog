@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Account, Profile
+from .models import Account, Profile, Token
 
 
 class AccountAdmin(admin.ModelAdmin):
@@ -11,8 +11,14 @@ class AccountAdmin(admin.ModelAdmin):
     search_fields = ['username', 'email']
 
 
+class TokenAdmin(admin.ModelAdmin):
+    list_display = ['token', 'is_valid']
+    list_filter = ['created', 'updated']
+
+
 admin.site.site_header = "Blog Admin"
 admin.site.site_title = "Blog"
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Profile)
+admin.site.register(Token, TokenAdmin)

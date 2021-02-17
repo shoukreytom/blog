@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
+import datetime
 
 from .managers import AccountManager
 
@@ -31,6 +33,23 @@ class Account(AbstractBaseUser):
     
     def has_module_perms(self, app_labbel):
         return True
+
+
+class Token(models.Model):
+    user = models.OneToOneField(Account, on_delete=models.CASCADE)
+    token = models.CharField(max_length=40, unique=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def is_valid(self):
+        now = timezone.now()
+        diff = now - datetime.timedelta(days=1)
+        if self.updated > self.created:
+            return diff <= self.updated <= now
+        return diff <= self.created <= now
+
+    def __str__(self):
+        return self.token
 
 
 class Profile(models.Model):
