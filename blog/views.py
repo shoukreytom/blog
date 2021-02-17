@@ -6,7 +6,7 @@ from django.core.mail import EmailMessage, send_mail
 from django.conf import settings
 
 from .models import Post
-from .forms import CreatePostForm, ContactForm
+from .forms import CreateUpdatePostForm, ContactForm
 
 
 class PostsList(ListView):
@@ -23,7 +23,7 @@ class PostDetail(DetailView):
     model = Post
 
 class CreatePost(CreateView):
-    empty_form = CreatePostForm()
+    empty_form = CreateUpdatePostForm()
     def get(self, request, *args, **kwargs):
         ctx = {
             'form': self.empty_form,
@@ -31,7 +31,7 @@ class CreatePost(CreateView):
         return render(request, "blog/create_post.html", ctx)
     
     def post(self, request, *args, **kwargs):
-        filled_form = CreatePostForm(request.POST)
+        filled_form = CreateUpdatePostForm(request.POST)
         if filled_form.is_valid():
             post = filled_form.save(commit=False)
             post.author = request.user
@@ -44,6 +44,13 @@ class CreatePost(CreateView):
             'form': self.empty_form,
         }
         return render(request, "blog/create_post.html")
+
+
+class UpdatePost(UpdateView):
+    model = Post
+    form_class = CreateUpdatePostForm
+    template_name = "blog/update_post.html"
+    success_url = '/'
 
 
 def about(request):
