@@ -12,6 +12,8 @@ from .managers import AccountManager
 class Account(AbstractBaseUser):
     username = models.CharField(max_length=40, unique=True)
     email = models.EmailField(unique=True)
+    followers = models.ManyToManyField('self', related_name='followers')
+    following = models.ManyToManyField('self', related_name='following')
     date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_active = models.BooleanField(default=True)
