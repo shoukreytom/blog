@@ -1,54 +1,77 @@
-from django.conf import settings
 from django.db import models
-from autoslug import AutoSlugField
-from accounts.models import Account
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.utils.text import slugify
+import secrets
 
-
-class PublishedManager(models.Manager):
-    def get_queryset(self):
-        return Post.objects.filter(status='published')
+from .managers import PublishedPosts, DraftedPosts
+from .utils import upload_cover_photo_to, STATUS_CHOICES
 
 
 class Post(models.Model):
-    STATUS_CHOICES = [
-        ('published', 'Published'),
-        ('draft', 'Draft'),
-    ]
-    title = models.CharField(max_length=250)
-    slug = AutoSlugField(populate_from='title', unique_with='publish__month')
-    content = models.TextField()
-    author = models.ForeignKey(Account, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
-    publish = models.DateTimeField(auto_now_add=True, verbose_name='published date')
-    update = models.DateTimeField(auto_now=True, verbose_name='updated date')
+    author      = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title       = models.CharField(max_length=250)
+    slug        = models.SlugField(max_length=250, blank=True, null=True)
+    content     = models.TextField()
+    cover_photo = models.ImageField(upload_to=upload_cover_photo_to, 
+                                    verbose_name="Cover Photo", 
+                                    blank=True, null=True)
+    votes       = models.PositiveBigIntegerField(default=0)
+    unvotes     = models.PositiveBigIntegerField(default=0)
+    status      = models.CharField(choices=STATUS_CHOICES, max_length=15, default='draft')
+    created     = models.DateTimeField(auto_now_add=True)
+    updated     = models.DateTimeField(auto_now=True)
 
     objects = models.Manager()
-    published = PublishedManager()
+    published = PublishedPosts()
+    drafted = DraftedPosts()
 
     def __str__(self):
-        return self.title
+        return f"{self.title}"
 
 
 class Comment(models.Model):
-    text = models.CharField(max_length=500)
-    author = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='comments')
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    author  = models.ForeignKey(settings.AUTH_USER_MODEL, 
+                                on_delete=models.CASCADE, 
+                                related_name="comments")
+    post    = models.ForeignKey(Post, on_delete=models.CASCADE, 
+                                related_name="comments")
+    text    = models.TextField(max_length=500)
+    votes       = models.PositiveBigIntegerField(default=0)
+    unvotes     = models.PositiveBigIntegerField(default=0)
+    status  = models.CharField(choices=STATUS_CHOICES, max_length=15, default='draft')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.text[:30]}..."
+        return f"{self.text[:50]}"
 
 
 class Reply(models.Model):
-    text = models.CharField(max_length=500)
-    author = models.ForeignKey(Account, on_delete=models.CASCADE)
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies')
+    author  = models.ForeignKey(settings.AUTH_USER_MODEL, 
+                                on_delete=models.CASCADE, 
+                                related_name="replies")
+    comment    = models.ForeignKey(Comment, on_delete=models.CASCADE, 
+                                related_name="replies")
+    text    = models.TextField(max_length=500)
+    votes       = models.PositiveBigIntegerField(default=0)
+    unvotes     = models.PositiveBigIntegerField(default=0)
+    status  = models.CharField(choices=STATUS_CHOICES, max_length=15, default='draft')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    
     class Meta:
-        verbose_name_plural = 'Replies'
+        verbose_name_plural = "Replies"
+    
 
     def __str__(self):
-        return f"{self.text[:30]}..."
+        return f"{self.text[:50]}"
+
+
+@receiver(post_save, sender=Post)
+def add_slug_field(sender, instance, created, *args, **kwargs):
+    if created:
+        instance.slug = slugify(instance.title)+secrets.token_hex(5)
+        instance.save()

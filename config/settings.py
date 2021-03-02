@@ -1,31 +1,16 @@
+from pathlib import Path
 import os
 
-import django_heroku
-
-from pathlib import Path
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
-if os.path.exists(BASE_DIR / '.env'):
-    from decouple import config
-    SECRET_KEY = config('SECRET_KEY')
-    DEBUG = config('DEBUG') == 'True'
-    EMAIL_HOST_USER = config("EMAIL_USER")
-    EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD")
+if os.path.exists(os.path.join(BASE_DIR/'config', 'hidden.py')):
+    from .hidden import *
 else:
-    SECRET_KEY = os.environ.get("SECRET_KEY")
-    DEBUG = (os.environ.get("DEBUG_VALUE") == "True")
-    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    DEBUG      = os.environ.get('DEBUG_VALUE')
 
-ALLOWED_HOSTS = ['sttech.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -37,14 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'django_filters',
-    'crispy_forms',
-    'django_seed',
-
-    # local
     'blog',
-    'accounts',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -57,13 +36,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-AUTH_USER_MODEL = 'accounts.Account'
+AUTH_USER_MODEL = 'users.User'
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'templates', ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,11 +106,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [BASE_DIR/'static', ]
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-X_FRAME_OPTIONS = 'SAMEORIGIN'
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-django_heroku.settings(locals())
+MEDIA_ROOT = BASE_DIR / 'media'
