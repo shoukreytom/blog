@@ -1,20 +1,10 @@
 from django.contrib import admin
-from django.urls import path, re_path, include
+from django.urls import path
 from django.conf import settings
-from django.conf.urls import handler404, handler500, static
-
-import blog.views as blog_views
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('blog.urls')),
-    path('accounts/', include('accounts.urls')),
-
-    # api
-    path("api/blog/", include('blog.api.urls')),
 ]
-urlpatterns += static.static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-handler404 = blog_views.handler404
-# handler500 = blog.views.handler500
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
