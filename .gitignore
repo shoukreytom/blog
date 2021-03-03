@@ -8,3 +8,4 @@ media/
 
 # special file
 config/hidden.py
+frontend/static/css/styles.css
