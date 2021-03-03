@@ -4,13 +4,14 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-if os.path.exists(os.path.join(BASE_DIR/'config', 'hidden.py')):
-    from .hidden import *
-else:
-    SECRET_KEY = os.environ.get('SECRET_KEY')
-    DEBUG      = os.environ.get('DEBUG_VALUE')
+SECRET_KEY = 'secret_key'
+# if os.path.exists(os.path.join(BASE_DIR/'config', 'hidden.py')):
+#     from .hidden import *
+# else:
+#     SECRET_KEY = os.environ.get('SECRET_KEY')
+#     DEBUG      = os.environ.get('DEBUG_VALUE')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -24,6 +25,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog',
     'users',
+
+    # 3rd party apps
+    'tailwind',
+    'frontend',
+
 ]
 
 MIDDLEWARE = [
@@ -36,13 +42,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+TAILWIND_APP_NAME = 'frontend'
 AUTH_USER_MODEL = 'users.User'
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
