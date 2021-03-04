@@ -26,9 +26,9 @@ INSTALLED_APPS = [
     'blog',
     'users',
 
-    # 3rd party apps
-    'tailwind',
-    'frontend',
+    # # 3rd party apps
+    # 'tailwind',
+    # 'frontend',
 
 ]
 
