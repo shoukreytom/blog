@@ -7,5 +7,5 @@ media/
 *.sqlite3
 
 # special file
-config/hidden.py
-frontend/static/css/styles.css
+hidden.py
+frontend/src/tailwind.css
