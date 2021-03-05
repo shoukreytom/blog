@@ -1,15 +1,15 @@
 from pathlib import Path
 import os
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'secret_key'
-# if os.path.exists(os.path.join(BASE_DIR/'config', 'hidden.py')):
-#     from .hidden import *
-# else:
-#     SECRET_KEY = os.environ.get('SECRET_KEY')
-#     DEBUG      = os.environ.get('DEBUG_VALUE')
+if os.path.exists(os.path.join(BASE_DIR/'config', 'hidden.py')):
+    from .hidden import *
+else:
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    DEBUG      = os.environ.get('DEBUG_VALUE')
 
 ALLOWED_HOSTS = ["*"]
 
@@ -26,9 +26,9 @@ INSTALLED_APPS = [
     'blog',
     'users',
 
-    # 3rd party apps
-    'tailwind',
-    'frontend',
+    # # 3rd party apps
+    # 'tailwind',
+    # 'frontend',
 
 ]
 
@@ -113,5 +113,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+django_heroku.settings(locals())
