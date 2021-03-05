@@ -8,4 +8,4 @@ media/
 
 # special file
 hidden.py
-frontend/static/css/styles.css
+frontend/src/tailwind.css
