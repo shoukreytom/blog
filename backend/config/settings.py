@@ -23,16 +23,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # local apps
     'blog',
     'users',
+    'api',
 
-    # # 3rd party apps
+    # 3rd party apps
+    'rest_framework',
+    'corsheaders',
     # 'tailwind',
     # 'frontend',
 
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',    #3rd party
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -45,6 +51,11 @@ MIDDLEWARE = [
 TAILWIND_APP_NAME = 'frontend'
 AUTH_USER_MODEL = 'users.User'
 ROOT_URLCONF = 'config.urls'
+# CORS_ALLOW_ALL_ORIGINS = True   # TODO: comment this line after test
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8080",
+#     "http://localhost:443",
+# ]
 
 TEMPLATES = [
     {
