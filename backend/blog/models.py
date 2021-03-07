@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 import secrets
 
-from .managers import PublishedPosts, DraftedPosts
+from .managers import Published, Drafted
 from .utils import upload_cover_photo_to, STATUS_CHOICES
 
 
@@ -17,15 +17,15 @@ class Post(models.Model):
     cover_photo = models.ImageField(upload_to=upload_cover_photo_to, 
                                     verbose_name="Cover Photo", 
                                     blank=True, null=True)
-    votes       = models.PositiveBigIntegerField(default=0)
-    unvotes     = models.PositiveBigIntegerField(default=0)
+    upvotes       = models.PositiveBigIntegerField(default=0)
+    downvotes     = models.PositiveBigIntegerField(default=0)
     status      = models.CharField(choices=STATUS_CHOICES, max_length=15, default='draft')
     created     = models.DateTimeField(auto_now_add=True)
     updated     = models.DateTimeField(auto_now=True)
 
     objects = models.Manager()
-    published = PublishedPosts()
-    drafted = DraftedPosts()
+    published = Published()
+    drafted = Drafted()
 
     def __str__(self):
         return f"{self.title}"
@@ -38,11 +38,15 @@ class Comment(models.Model):
     post    = models.ForeignKey(Post, on_delete=models.CASCADE, 
                                 related_name="comments")
     text    = models.TextField(max_length=500)
-    votes       = models.PositiveBigIntegerField(default=0)
-    unvotes     = models.PositiveBigIntegerField(default=0)
+    upvotes       = models.PositiveBigIntegerField(default=0)
+    downvotes     = models.PositiveBigIntegerField(default=0)
     status  = models.CharField(choices=STATUS_CHOICES, max_length=15, default='draft')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager()
+    published = Published()
+    drafted = Drafted()
 
     def __str__(self):
         return f"{self.text[:50]}"
@@ -55,11 +59,15 @@ class Reply(models.Model):
     comment    = models.ForeignKey(Comment, on_delete=models.CASCADE, 
                                 related_name="replies")
     text    = models.TextField(max_length=500)
-    votes       = models.PositiveBigIntegerField(default=0)
-    unvotes     = models.PositiveBigIntegerField(default=0)
+    upvotes       = models.PositiveBigIntegerField(default=0)
+    downvotes     = models.PositiveBigIntegerField(default=0)
     status  = models.CharField(choices=STATUS_CHOICES, max_length=15, default='draft')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager()
+    published = Published()
+    drafted = Drafted()
 
     
     class Meta:
