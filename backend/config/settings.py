@@ -48,14 +48,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-TAILWIND_APP_NAME = 'frontend'
+# TAILWIND_APP_NAME = 'frontend'
 AUTH_USER_MODEL = 'users.User'
 ROOT_URLCONF = 'config.urls'
-# CORS_ALLOW_ALL_ORIGINS = True   # TODO: comment this line after test
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:8080",
-#     "http://localhost:443",
-# ]
+CORS_ALLOW_ALL_ORIGINS = True   # TODO: comment this line after test
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://localhost:443",
+]
 
 TEMPLATES = [
     {
@@ -129,3 +129,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 django_heroku.settings(locals())
+X_FRAME_OPTIONS = 'SAMEORIGIN'
