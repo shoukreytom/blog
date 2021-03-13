@@ -1,10 +1,9 @@
-from django.db.utils import IntegrityError
 from rest_framework import serializers
 
 from users.models import User
 
 
-class UsersSerializer(serializers.ModelSerializer):
+class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
@@ -28,7 +27,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         }
     
     def validate_username(self, value):
-        if len(value.split(" ")) > 1:
+        reserved_list = ["auth", "register", "login", "accounts"]
+        if len(value.split(" ")) > 1 and value not in reserved_list:
             raise serializers.ValidationError("Invalid username")
         return value.lower()
 
@@ -39,12 +39,26 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         password = self.validated_data.get("password", None)
         password2 = self.validated_data.get("password2", None)
 
-        if username and email:
-            try:
-                user = User.objects.create(username=username, email=email)
-                if password == password2:
-                    user.set_password(password2)
-                    user.save()
-            except IntegrityError:
-                raise serializers.ValidationError("username or email is already exist")
-        return serializers.ValidationError("username and email are required.")
+        user = User.objects.create(username=username, email=email)
+        if password == password2:
+            user.set_password(password2)
+            user.save()
+        else:
+            return serializers.ValidationError("username and email are required.")
+
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'password')
+        extra_kwargs = {
+            'password': {
+                'style': {'input_type': 'password'}
+            }
+        }
+
+
+class UserChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email', )

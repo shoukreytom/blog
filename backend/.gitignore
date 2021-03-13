@@ -5,6 +5,6 @@ env
 .env.example
 hidden.py
 staticfiles/
-migrations/000*
+migrations/
 *.db
 *.sqlite3
