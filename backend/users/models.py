@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -7,7 +7,7 @@ from .managers import UserManager
 from .utils import upload_avatar_to, NOTIFICATION_TYPES, NOTIFICATION_STATUS
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=40, unique=True)
     date_joined = models.DateTimeField(auto_now_add=True, verbose_name="date joined")
@@ -17,27 +17,24 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
-    followers = models.ManyToManyField('self', related_name='followers')
-    following = models.ManyToManyField('self', related_name='following')
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = []
 
     objects = UserManager()
 
     def __str__(self):
         return self.username
-    
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-    
-    def has_module_perms(self, app):
-        return True
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     avatar = models.ImageField(upload_to=upload_avatar_to, default='avatars/default.jpg')
+    title = models.CharField(max_length=60, blank=True)
+    bio = models.TextField(max_length=500, blank=True)
+    location = models.CharField(max_length=60, blank=True)
+    followers = models.ManyToManyField(User, related_name='followers', blank=True)
+    following = models.ManyToManyField(User, related_name='following', blank=True)
 
     def __str__(self):
         return f"<Profile <User {self.user.username}>>"

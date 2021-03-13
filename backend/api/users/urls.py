@@ -1,4 +1,8 @@
 from django.urls import path
 
+from .views import UsersListAPIView
 
-urlpatterns = []
+
+urlpatterns = [
+    path('', UsersListAPIView.as_view()),
+]
