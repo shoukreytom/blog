@@ -8,10 +8,11 @@ from rest_framework.mixins import (
 from django.db.models import Q
 from blog.models import Comment, Post, Reply
 from .serializers import PostSerializer, CommentSerializer, ReplySerializer
+from .utils import PostListPaginator
 
 
 """ METHODS:
-    GET ---> api/v1/posts/, with 3 optional parms (status, query, count)
+    GET ---> api/v1/posts/, with 2 optional parms (status, search)
     POST --> api/v1/posts/
 
     GET --> api/v1/posts/id/
@@ -25,22 +26,17 @@ class PostCreateListAPIView(CreateModelMixin, ListAPIView):
         permissions.IsAuthenticatedOrReadOnly,
     ]
     serializer_class = PostSerializer
+    pagination_class = PostListPaginator
 
     def get_queryset(self):
         qs = Post.objects.all()
         status = self.request.GET.get("status", None)
-        query = self.request.GET.get("query", "")
-        count = self.request.GET.get("count", None)
-        search_query = Q(title__icontains=query) | Q(content__icontains=query)
+        search_txt = self.request.GET.get("search", "")
+        search_query = Q(title__icontains=search_txt) | Q(content__icontains=search_txt)
         if status and status.lower() == "published":
             qs = Post.published.all().filter(search_query)
         if status and status.lower() == "draft":
             qs = Post.drafted.all().filter(search_query)
-        try:
-            count = int(count)
-            qs = qs[:count]
-        except:
-            pass
         return qs
 
     def post(self, request, *args, **kwargs):
