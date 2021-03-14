@@ -12,7 +12,7 @@ from .utils import PostListPaginator
 
 
 """ METHODS:
-    GET ---> api/v1/posts/, with 2 optional parms (status, search)
+    GET ---> api/v1/posts/, with 3 optional parms (status, search, count)
     POST --> api/v1/posts/
 
     GET --> api/v1/posts/id/
@@ -27,16 +27,23 @@ class PostCreateListAPIView(CreateModelMixin, ListAPIView):
     ]
     serializer_class = PostSerializer
     pagination_class = PostListPaginator
+    queryset = Post.objects.all()
 
-    def get_queryset(self):
-        qs = Post.objects.all()
+    def get_queryset(self, *args, **kwargs):
         status = self.request.GET.get("status", None)
         search_txt = self.request.GET.get("search", "")
-        search_query = Q(title__icontains=search_txt) | Q(content__icontains=search_txt)
-        if status and status.lower() == "published":
-            qs = Post.published.all().filter(search_query)
-        if status and status.lower() == "draft":
-            qs = Post.drafted.all().filter(search_query)
+        count = self.request.GET.get("count", None)
+        qs = super().get_queryset()
+        if status:
+            qs = qs.filter(status=status)
+        if search_txt:
+            query = Q(title__icontains=search_txt) | Q(content__icontains=search_txt)
+            qs = qs.filter(query)
+        try:
+            count = int(count)
+            qs = qs[:count]
+        except (ValueError, TypeError):
+            pass
         return qs
 
     def post(self, request, *args, **kwargs):

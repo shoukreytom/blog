@@ -32,6 +32,7 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'rest_framework',
+    'rest_framework_jwt',
     'corsheaders',
     # 'tailwind',
     # 'frontend',
@@ -61,7 +62,6 @@ CORS_ALLOWED_ORIGINS = [
 REST_FRAMEWORK = {
      'DEFAULT_PERMISSION_CLASSES': [
          'rest_framework.permissions.IsAuthenticated',
-         'rest_framework.permissions.IsAdminUser',
          ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
      'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
