@@ -1,6 +1,11 @@
 from django.urls import path
 
-from .views import UserLoginAPIView, UserRegisterAPIView, UserRetrieveUpdateDeleteAPIView, UserListAPIView
+from .views import (
+    UserListAPIView,
+    UserRetrieveUpdateDeleteAPIView,
+    UserRegisterAPIView,
+    UserLoginAPIView,
+)
 
 
 urlpatterns = [
