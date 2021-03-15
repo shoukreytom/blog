@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 import django_heroku
+import secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,8 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 if os.path.exists(os.path.join(BASE_DIR/'config', 'hidden.py')):
     from .hidden import *
 else:
-    SECRET_KEY = os.environ.get('SECRET_KEY')
-    DEBUG      = os.environ.get('DEBUG_VALUE')
+    default_key = secrets.token_hex(24)
+    SECRET_KEY = os.environ.get('SECRET_KEY', default_key)
+    DEBUG      = os.environ.get('DEBUG_VALUE', False)
 
 ALLOWED_HOSTS = ["*"]
 
