@@ -58,7 +58,7 @@ ROOT_URLCONF = 'config.urls'
 CORS_ALLOW_ALL_ORIGINS = True   # TODO: comment this line after test
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
-    "http://localhost:443",
+    # "http://localhost:443",
 ]
 
 REST_FRAMEWORK = {
