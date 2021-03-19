@@ -1,4 +1,6 @@
 from rest_framework import permissions
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.mixins import (
     CreateModelMixin,
@@ -169,3 +171,70 @@ class ReplyRetrieveUpdateDeleteAPIView(
 
     def delete(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
+
+
+@api_view(['POST', ])
+def post_upvote(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.upvotes += 1
+    post.save()
+    data = {
+        'success': True
+    }
+    return Response(data)
+
+@api_view(['POST', ])
+def post_downvote(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.downvotes += 1
+    post.save()
+    data = {
+        'success': True
+    }
+    return Response(data)
+
+@api_view(['POST', ])
+def comment_upvote(request, post_pk, pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    comment = get_object_or_404(post.comments, pk=pk)
+    comment.upvotes += 1
+    comment.save()
+    data = {
+        'success': True
+    }
+    return Response(data)
+
+@api_view(['POST', ])
+def comment_downvote(request, post_pk, pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    comment = get_object_or_404(post.comments, pk=pk)
+    comment.downvotes += 1
+    comment.save()
+    data = {
+        'success': True
+    }
+    return Response(data)
+
+@api_view(['POST', ])
+def reply_upvote(request, post_pk, comment_pk, pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    comment = get_object_or_404(post.comments, pk=comment_pk)
+    reply = get_object_or_404(comment.replies, pk=pk)
+    reply.upvotes += 1
+    reply.save()
+    data = {
+        'success': True
+    }
+    return Response(data)
+
+@api_view(['POST', ])
+def reply_downvote(request, post_pk, comment_pk, pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    comment = get_object_or_404(post.comments, pk=comment_pk)
+    reply = get_object_or_404(comment.replies, pk=pk)
+    reply.downvotes += 1
+    reply.save()
+    data = {
+        'success': True
+    }
+    return Response(data)

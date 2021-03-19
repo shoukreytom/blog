@@ -16,6 +16,7 @@ from .serializers import (
     UserLoginSerializer,
     UserRegisterSerializer,
 )
+from .permissions import IsOwnerOrAdmin, Isverified
 from users.models import User
 
 
@@ -74,6 +75,7 @@ class UserRetrieveUpdateDeleteAPIView(
     DestroyModelMixin, UpdateModelMixin, RetrieveAPIView
 ):
     serializer_class = UserChangeSerializer
+    permission_classes = (Isverified, IsOwnerOrAdmin, )
     queryset = User.objects.all()
     lookup_field = "username"
 
