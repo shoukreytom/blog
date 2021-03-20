@@ -15,7 +15,7 @@ def send_email(email, key):
         url = f"http://{host}:8000/api/v1/users/auth/email/confirm"
     else:
         host = "djangoblogdemo.herokuapp.com"
-        url = f"https://{host}/api/v1/users/email/confirm"
+        url = f"https://{host}/api/v1/users/auth/email/confirm"
 
     message = f"""<strong>Hello from {host}!</strong><br>
 <p>You're receiving this e-mail because your email address has been used e-mail to register an account on {host}.<br>
