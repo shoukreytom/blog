@@ -16,7 +16,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    is_verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -24,7 +23,27 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return self.username
+        return self.email
+
+
+class EmailAddress(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='email_addresses')
+    email = models.EmailField(unique=True)
+    verified = models.BooleanField(default=False)
+    primary = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.email
+
+
+class EmailConfirmation(models.Model):
+    email = models.ForeignKey('EmailAddress', on_delete=models.CASCADE)
+    key = models.CharField(max_length=250, unique=True)
+    created = models.DateTimeField(auto_now_add=True)
+    sent = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.email.email
 
 
 class Profile(models.Model):
@@ -53,10 +72,3 @@ class Notifications(models.Model):
 
     class Meta:
         verbose_name_plural = 'Notifications'
-
-
-@receiver(post_save, sender=User)
-def save_profile(sender, instance=None, created=None, *args, **kwargs):
-    if created:
-        profile = Profile.objects.create(user=instance)
-        profile.save()

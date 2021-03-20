@@ -27,7 +27,6 @@ class UserManager(models.BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_admin', True)
         extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_verified', True)
 
         user = self._create_user(
             username=username, 

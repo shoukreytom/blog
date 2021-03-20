@@ -50,6 +50,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
                 if password == password2:
                     user.set_password(password2)
                     user.save()
+                    return user
             except IntegrityError:
                 raise serializers.ValidationError("username or email is already exist")
 

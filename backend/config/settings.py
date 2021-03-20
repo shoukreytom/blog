@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # local apps
     "blog",
-    "users",
+    "users.apps.UsersConfig",
     "api",
     # 3rd party apps
     "rest_framework",

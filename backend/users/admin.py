@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.forms.models import BaseModelForm, ModelForm
 
-from .models import User, Profile, Notifications
+from .models import User, EmailAddress, EmailConfirmation, Profile, Notifications
 from .forms import UserRegisterationForm, UserChangeForm
 
 
@@ -17,7 +17,6 @@ class UserAdmin(UserAdmin):
         "is_staff",
         "is_admin",
         "is_superuser",
-        "is_verified",
         "last_login",
         "date_joined",
     ]
@@ -25,7 +24,6 @@ class UserAdmin(UserAdmin):
         "is_active",
         "is_staff",
         "is_admin",
-        "is_verified",
         "is_superuser",
         "last_login",
         "date_joined",
@@ -34,7 +32,7 @@ class UserAdmin(UserAdmin):
     list_display_links = ["username", "email"]
     fieldsets = (
         (None, {"fields": ("username", "email", "password")}),
-        ("Permissions", {"fields": ("is_active", "is_staff", "is_verified")}),
+        ("Permissions", {"fields": ("is_active", "is_staff")}),
     )
     add_fieldsets = (
         (
@@ -66,3 +64,13 @@ class NotificationsAdmin(admin.ModelAdmin):
     list_filter = [
         "user",
     ]
+
+
+@admin.register(EmailAddress)
+class EmailAddressAdmin(admin.ModelAdmin):
+    list_display = ["email", "user", "primary", "verified"]
+
+
+@admin.register(EmailConfirmation)
+class EmailConfirmationAdmin(admin.ModelAdmin):
+    list_display = ["email", "key", "created", "sent"]

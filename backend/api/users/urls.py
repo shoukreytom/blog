@@ -4,7 +4,7 @@ from .views import (
     UserListAPIView,
     UserRetrieveUpdateDeleteAPIView,
     UserRegisterAPIView,
-    UserLoginAPIView,
+    UserLoginAPIView, confirm_email,
 )
 
 
@@ -13,4 +13,5 @@ urlpatterns = [
     path("<str:username>/", UserRetrieveUpdateDeleteAPIView.as_view()),
     path("auth/register/", UserRegisterAPIView.as_view()),
     path("auth/login/", UserLoginAPIView.as_view()),
+    path("auth/email/confirm/<str:token>/", confirm_email),
 ]
