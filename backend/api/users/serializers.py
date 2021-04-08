@@ -94,5 +94,24 @@ class UserChangeSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    user = UserListSerializer()
+    followers = serializers.SerializerMethodField()
+    following = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
+        fields = (
+            "user",
+            "avatar",
+            "title",
+            "bio",
+            "location",
+            "followers",
+            "following"
+        )
+    
+    def get_followers(self, obj):
+        return obj.followers.count()
+    
+    def get_following(self, obj):
+        return obj.following.count()

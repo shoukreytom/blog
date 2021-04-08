@@ -199,3 +199,10 @@ class FollowingListAPIView(APIView):
         following = user.profile.following.all()
         serializer = UserListSerializer(following, many=True)
         return Response(serializer.data)
+
+
+class UserProfileAPIView(APIView):
+    def get(self, request, username):
+        user = get_object_or_404(User, username=username)
+        serializer = ProfileSerializer(user.profile)
+        return Response(serializer.data)
