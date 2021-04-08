@@ -183,3 +183,19 @@ class FollowAPIView(APIView):
                 data["detail"] = "You're not following this user"
                 status_code = status.HTTP_400_BAD_REQUEST
         return Response(data, status=status_code)
+
+
+class FollowersListAPIView(APIView):
+    def get(self, request, username):
+        user = get_object_or_404(User, username=username)
+        followers = user.profile.followers.all()
+        serializer = UserListSerializer(followers, many=True)
+        return Response(serializer.data)
+
+
+class FollowingListAPIView(APIView):
+    def get(self, request, username):
+        user = get_object_or_404(User, username=username)
+        following = user.profile.following.all()
+        serializer = UserListSerializer(following, many=True)
+        return Response(serializer.data)
