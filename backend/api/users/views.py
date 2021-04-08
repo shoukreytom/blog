@@ -1,19 +1,22 @@
 from django.utils import timezone
-from rest_framework import response
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from rest_framework.generics import (
     CreateAPIView,
     GenericAPIView,
     ListAPIView,
     RetrieveAPIView,
+    get_object_or_404,
 )
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
 
 from .serializers import (
+    ProfileSerializer,
     UserChangeSerializer,
     UserListSerializer,
     UserLoginSerializer,
@@ -21,7 +24,7 @@ from .serializers import (
 )
 from .permissions import IsOwnerOrAdmin, Isverified
 from .utils import send_email
-from users.models import EmailAddress, EmailConfirmation, User
+from users.models import EmailAddress, EmailConfirmation, Profile, User
 
 
 class UserLoginAPIView(GenericAPIView):
@@ -84,8 +87,6 @@ class UserRegisterAPIView(CreateAPIView):
 2- POST ---> api/v1/users/signup : register new user
 3- GET ---> api/v1/users/signin : login user
 """
-
-
 class UserListAPIView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserListSerializer
@@ -126,3 +127,59 @@ def confirm_email(request, token):
         response["message"] = "Email confirmation failed."
         status_code = status.HTTP_403_FORBIDDEN
     return Response(response, status=status_code)
+
+
+"""METHODS:
+    1- POST --> api/v1/users/follow/ 
+        - adds a user to authenticated user's following list.
+        - adds an authenticated user to a followed user's followers list.
+    2- DELETE --> api/v1/users/follow/
+        - removes a user from authenticated user's following list.
+        - removes authenticate user from unfollowed users's followers list.
+"""
+class FollowAPIView(APIView):
+    permission_classes = [IsAuthenticated, ]
+
+    def post(self, request, username):
+        data = {}
+        data["OK"] = False
+        status_code = status.HTTP_201_CREATED
+        user = get_object_or_404(User, username=username)
+        auth_user = request.user
+        if user == auth_user:
+            data["detail"] = "You can't follow or unfollow yourself"
+            status_code = status.HTTP_400_BAD_REQUEST
+        else:
+            try:
+                auth_user.profile.following.get(username=user.username)
+                data["detail"] = "You're already following this user"
+                status_code = status.HTTP_400_BAD_REQUEST
+            except:
+                profile = get_object_or_404(Profile, user=user)
+                profile.followers.add(request.user)
+                request.user.profile.following.add(user)
+                data["OK"] = True
+                data["detail"] = f"{user}, is added to your following list successfully."
+        return Response(data, status=status_code)
+
+    def delete(self, request, username):
+        data = {}
+        data["OK"] = False
+        status_code = status.HTTP_200_OK
+        user = get_object_or_404(User, username=username)
+        auth_user = request.user
+        if user == auth_user:
+            data["detail"] = "You can't follow or unfollow yourself"
+            status_code = status.HTTP_400_BAD_REQUEST
+        else:
+            try: 
+                auth_user.profile.following.get(username=user.username)
+                profile = get_object_or_404(Profile, user=user)
+                profile.followers.remove(request.user)
+                request.user.profile.following.remove(user)
+                data["OK"] = True
+                data["detail"] = f"{user}, is removed from your following list successfully."
+            except ObjectDoesNotExist:
+                data["detail"] = "You're not following this user"
+                status_code = status.HTTP_400_BAD_REQUEST
+        return Response(data, status=status_code)

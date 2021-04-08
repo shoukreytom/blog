@@ -1,10 +1,11 @@
+from django.db.models import fields
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.db import IntegrityError
 
-from users.models import User
+from users.models import Profile, User
 from .utils import JWT_PAYLOAD_HANDLER, JWT_ENCODE_HANDLER
 
 
@@ -90,3 +91,8 @@ class UserChangeSerializer(serializers.ModelSerializer):
             "username",
             "email",
         )
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
