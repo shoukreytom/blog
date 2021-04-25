@@ -22,9 +22,11 @@ from .serializers import (
     UserLoginSerializer,
     UserRegisterSerializer,
 )
+from hashlib import sha256
+import secrets
 from .permissions import IsOwnerOrAdmin, Isverified
-from .utils import send_email
-from users.models import EmailAddress, EmailConfirmation, Profile, User
+from .utils import SendMessage
+from users.models import EmailAddress, EmailConfirmation, Profile, User, PasswordReset
 
 
 class UserLoginAPIView(GenericAPIView):
@@ -63,7 +65,8 @@ class UserRegisterAPIView(CreateAPIView):
             email = request.data.get("email")
             email_addr = account.email_addresses.get(email=email)
             email_conf = EmailConfirmation.objects.get(email=email_addr)
-            email_sent = send_email(email, email_conf.key)
+            sm_obj = SendMessage()
+            email_sent = sm_obj.send_confirmation_message(email, email_conf.key)
             if email_sent:
                 email_conf.sent = timezone.now()
                 email_conf.save()
@@ -218,3 +221,64 @@ class UserProfileAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# TODO: let client provide url to redirect_url* with the key
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def password_reset_request(request):
+    data = {}
+    email = request.POST.get('email')
+    get_object_or_404(User, email=email)
+    # TODO: generate token, save email and token to db
+    token = secrets.token_hex(20)
+    # TODO: encrypt email and append token :token to it
+    enc_email = sha256(email.encode()).digest().hex()
+    # TODO: send an email to the user with that url
+    key = f'{enc_email}:{token}'
+    sm_obj = SendMessage()
+    msg_sent = sm_obj.send_passwordreset_message(email, key)
+    if msg_sent:
+        psw_reset, created = PasswordReset.objects.get_or_create(email=email)
+        psw_reset.enc_email = enc_email
+        psw_reset.token = token
+        psw_reset.save()
+        data['message'] = "we've sent a message to that email with a confirmation code."
+        data['OK'] = True
+    else:
+        data['message'] = "sorry! something went wrong."
+        data['OK'] = False
+    return Response(data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def password_reset_confirm(request, token=None):
+    data = {}
+    status_code = status.HTTP_200_OK
+    email, token = token.split(':')
+    psw_reset = get_object_or_404(PasswordReset, enc_email=email)
+    if psw_reset.token == token:
+        if request.method == 'POST':
+            password1 = request.POST.get('password1')
+            password2 = request.POST.get('password2')
+            if (password1 and password2) and (password1 == password2):
+                user = get_object_or_404(User, email=psw_reset.email)
+                user.set_password(password2)
+                user.save()
+                # psw_reset.delete() TODO: uncomment this line for saving resources
+                data['message'] = 'password is reset successfully.'
+                data['OK'] = True
+                status_code = status.HTTP_202_ACCEPTED
+            else:
+                data['message'] = 'password did not match.'
+                data['OK'] = False
+                status_code = status.HTTP_400_BAD_REQUEST
+        else:
+            data['message'] = 'this request is verified, please set new password.'
+            data['OK'] = True
+    else:
+        data['message'] = 'the provided token is unknown.'
+        data['OK'] = False
+        status_code = status_code.HTTP_403_FORBIDDEN
+    return Response(data, status=status_code)

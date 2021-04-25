@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.forms.models import BaseModelForm, ModelForm
 
-from .models import User, EmailAddress, EmailConfirmation, Profile, Notifications
+from .models import User, EmailAddress, EmailConfirmation, Profile, Notifications, PasswordReset
 from .forms import UserRegisterationForm, UserChangeForm
 
 
@@ -74,3 +74,6 @@ class EmailAddressAdmin(admin.ModelAdmin):
 @admin.register(EmailConfirmation)
 class EmailConfirmationAdmin(admin.ModelAdmin):
     list_display = ["email", "key", "created", "sent"]
+
+
+admin.site.register(PasswordReset)

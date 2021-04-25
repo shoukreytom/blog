@@ -9,6 +9,7 @@ from .views import (
     UserRetrieveUpdateDeleteAPIView,
     UserRegisterAPIView,
     UserLoginAPIView, confirm_email,
+    password_reset_request, password_reset_confirm
 )
 
 
@@ -22,4 +23,6 @@ urlpatterns = [
     path("auth/register/", UserRegisterAPIView.as_view()),
     path("auth/login/", UserLoginAPIView.as_view()),
     path("auth/email/confirm/<str:token>/", confirm_email),
+    path("auth/password/reset/", password_reset_request),
+    path("auth/password/reset/confirm/<str:token>/", password_reset_confirm),
 ]

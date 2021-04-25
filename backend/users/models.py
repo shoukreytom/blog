@@ -46,6 +46,16 @@ class EmailConfirmation(models.Model):
         return self.email.email
 
 
+class PasswordReset(models.Model):
+    email = models.EmailField(unique=True)
+    enc_email = models.CharField(verbose_name='Encrypted Email', max_length=500, unique=True)
+    token = models.CharField(max_length=500)
+
+
+    def __str__(self):
+        return self.email
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     avatar = models.ImageField(upload_to=upload_avatar_to, default='avatars/default.jpg')
