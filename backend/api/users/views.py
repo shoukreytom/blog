@@ -282,3 +282,11 @@ def password_reset_confirm(request, token=None):
         data['OK'] = False
         status_code = status_code.HTTP_403_FORBIDDEN
     return Response(data, status=status_code)
+
+
+class NotificationListAPIView(APIView):
+    
+    def get(self, request, username, *args, **kwargs):
+        user = get_object_or_404(User, username=username)
+        data = {}
+        return Response(data)

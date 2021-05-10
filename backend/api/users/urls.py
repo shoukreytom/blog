@@ -9,7 +9,8 @@ from .views import (
     UserRetrieveUpdateDeleteAPIView,
     UserRegisterAPIView,
     UserLoginAPIView, confirm_email,
-    password_reset_request, password_reset_confirm
+    password_reset_request, password_reset_confirm,
+    NotificationListAPIView
 )
 
 
@@ -20,6 +21,7 @@ urlpatterns = [
     path("<str:username>/follow/", FollowAPIView.as_view()),
     path("<str:username>/followers/", FollowersListAPIView.as_view()),
     path("<str:username>/following/", FollowingListAPIView.as_view()),
+    path("<str:username>/notifactions/", NotificationListAPIView.as_view()),
     path("auth/register/", UserRegisterAPIView.as_view()),
     path("auth/login/", UserLoginAPIView.as_view()),
     path("auth/email/confirm/<str:token>/", confirm_email),

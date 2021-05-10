@@ -35,7 +35,7 @@ class Comment(models.Model):
     author  = models.ForeignKey(settings.AUTH_USER_MODEL, 
                                 on_delete=models.CASCADE, 
                                 related_name="comments")
-    post    = models.ForeignKey(Post, on_delete=models.CASCADE, 
+    post    = models.ForeignKey('Post', on_delete=models.CASCADE, 
                                 related_name="comments")
     text    = models.TextField(max_length=500)
     upvotes       = models.PositiveBigIntegerField(default=0)
@@ -56,7 +56,7 @@ class Reply(models.Model):
     author  = models.ForeignKey(settings.AUTH_USER_MODEL, 
                                 on_delete=models.CASCADE, 
                                 related_name="replies")
-    comment    = models.ForeignKey(Comment, on_delete=models.CASCADE, 
+    comment    = models.ForeignKey('Comment', on_delete=models.CASCADE, 
                                 related_name="replies")
     text    = models.TextField(max_length=500)
     upvotes       = models.PositiveBigIntegerField(default=0)

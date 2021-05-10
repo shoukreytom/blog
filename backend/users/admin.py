@@ -2,7 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.forms.models import BaseModelForm, ModelForm
 
-from .models import User, EmailAddress, EmailConfirmation, Profile, Notifications, PasswordReset
+from .models import (
+    User, EmailAddress, EmailConfirmation, PasswordReset, 
+    Profile, FollowNotification, VoteNotification
+)
 from .forms import UserRegisterationForm, UserChangeForm
 
 
@@ -59,10 +62,18 @@ class ProfileAdmin(admin.ModelAdmin):
     ]
 
 
-@admin.register(Notifications)
-class NotificationsAdmin(admin.ModelAdmin):
+@admin.register(FollowNotification)
+class FollowNotificationsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'message', 'fromuser', 'touser', 'status']
     list_filter = [
-        "user",
+        "fromuser", "touser", "status"
+    ]
+
+@admin.register(VoteNotification)
+class VoteNotificationsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'message', 'fromuser', 'touser', 'status']
+    list_filter = [
+        "fromuser", "touser", "status"
     ]
 
 

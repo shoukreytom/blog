@@ -57,28 +57,34 @@ class PasswordReset(models.Model):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    user = models.OneToOneField('User', on_delete=models.CASCADE, related_name="profile")
     avatar = models.ImageField(upload_to=upload_avatar_to, default='avatars/default.jpg')
     title = models.CharField(max_length=60, blank=True)
     bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=60, blank=True)
-    followers = models.ManyToManyField(User, related_name='followers', blank=True)
-    following = models.ManyToManyField(User, related_name='following', blank=True)
+    followers = models.ManyToManyField('User', related_name='followers', blank=True)
+    following = models.ManyToManyField('User', related_name='following', blank=True)
 
     def __str__(self):
         return f"<Profile <User {self.user.username}>>"
 
 
-class Notifications(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField(max_length=200)
-    notif_type = models.CharField(verbose_name='Type', max_length=10, choices=NOTIFICATION_TYPES, default='follow')
+class FollowNotification(models.Model):
+    fromuser = models.ForeignKey('User', on_delete=models.CASCADE, related_name="from user+")
+    touser = models.ForeignKey('User', on_delete=models.CASCADE, related_name="to user+")
+    message = models.TextField(max_length=300)
     status = models.CharField(max_length=10, choices=NOTIFICATION_STATUS, default='unread')
-    action_url = models.URLField(verbose_name='URL')
 
     def __str__(self):
-        return f"<Notification <User {self.user.username}>>"
+        return f"<Follow Notification: {self.fromuser.username}-{self.touser.username}>"
 
 
-    class Meta:
-        verbose_name_plural = 'Notifications'
+class VoteNotification(models.Model):
+    fromuser = models.ForeignKey('User', on_delete=models.CASCADE, related_name="from user+")
+    touser = models.ForeignKey('User', on_delete=models.CASCADE, related_name="to user+")
+    voted_post = models.ForeignKey('blog.Post', on_delete=models.CASCADE)
+    message = models.TextField(max_length=300)
+    status = models.CharField(max_length=10, choices=NOTIFICATION_STATUS, default='unread')
+
+    def __str__(self):
+        return f"<Post Notification: {self.fromuser.username}-{self.touser.username}({self.post})>"
