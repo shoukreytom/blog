@@ -21,12 +21,18 @@ from .serializers import (
     UserListSerializer,
     UserLoginSerializer,
     UserRegisterSerializer,
+    FollowNotificationSerializer,
+    VoteNotificationSerializer,
 )
 from hashlib import sha256
 import secrets
 from .permissions import IsOwnerOrAdmin, Isverified
 from .utils import SendMessage
-from users.models import EmailAddress, EmailConfirmation, Profile, User, PasswordReset
+from users.models import (
+    EmailAddress, EmailConfirmation, 
+    Profile, User, PasswordReset,
+    FollowNotification, VoteNotification
+)
 
 
 class UserLoginAPIView(GenericAPIView):
@@ -288,5 +294,21 @@ class NotificationListAPIView(APIView):
     
     def get(self, request, username, *args, **kwargs):
         user = get_object_or_404(User, username=username)
+        status = 'unread'
+        if request.GET.get('status', ''):
+            status = request.GET.get('status').lower()
+            f_notifications = FollowNotification.objects.filter(touser=user, status=status)
+            v_notifications = VoteNotification.objects.filter(touser=user, status=status)
+        else:
+            f_notifications = FollowNotification.objects.filter(touser=user)
+            v_notifications = VoteNotification.objects.filter(touser=user)
+        fn_serializer = FollowNotificationSerializer(f_notifications, many=True)
+        vn_serializer = VoteNotificationSerializer(v_notifications, many=True)
         data = {}
+        data['OK'] = True
+        data['notifications'] = fn_serializer.data + vn_serializer.data
         return Response(data)
+
+
+# TODO: fix notification id
+# TODO: view to change notification status

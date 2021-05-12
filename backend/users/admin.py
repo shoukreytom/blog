@@ -71,9 +71,9 @@ class FollowNotificationsAdmin(admin.ModelAdmin):
 
 @admin.register(VoteNotification)
 class VoteNotificationsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'message', 'fromuser', 'touser', 'status']
+    list_display = ['id', 'message', 'fromuser', 'voted_post', 'touser', 'status']
     list_filter = [
-        "fromuser", "touser", "status"
+        "fromuser", "touser", "voted_post", "status"
     ]
 
 

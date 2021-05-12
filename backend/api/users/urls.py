@@ -21,10 +21,13 @@ urlpatterns = [
     path("<str:username>/follow/", FollowAPIView.as_view()),
     path("<str:username>/followers/", FollowersListAPIView.as_view()),
     path("<str:username>/following/", FollowingListAPIView.as_view()),
-    path("<str:username>/notifactions/", NotificationListAPIView.as_view()),
+    path("<str:username>/notifications/", NotificationListAPIView.as_view()),
     path("auth/register/", UserRegisterAPIView.as_view()),
     path("auth/login/", UserLoginAPIView.as_view()),
     path("auth/email/confirm/<str:token>/", confirm_email),
     path("auth/password/reset/", password_reset_request),
     path("auth/password/reset/confirm/<str:token>/", password_reset_confirm),
 ]
+
+# TODO: add url to set notification status
+# <str:username>/notifications/<int:pk>/?status=""

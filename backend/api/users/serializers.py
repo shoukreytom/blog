@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.db import IntegrityError
 
-from users.models import Profile, User
+from users.models import Profile, User, FollowNotification, VoteNotification
 from .utils import JWT_PAYLOAD_HANDLER, JWT_ENCODE_HANDLER
 
 
@@ -119,3 +119,25 @@ class ProfileSerializer(serializers.ModelSerializer):
     
     def get_following(self, obj):
         return obj.following.count()
+
+
+class FollowNotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FollowNotification
+        fields = ['id', 'fromuser', 'message', 'status']
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['type'] = 'follow'
+        return data
+
+
+class VoteNotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VoteNotification
+        fields = ['id', 'fromuser', 'touser', 'voted_post', 'message', 'status']
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['type'] = 'vote'
+        return data

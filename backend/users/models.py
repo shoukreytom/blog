@@ -82,9 +82,9 @@ class FollowNotification(models.Model):
 class VoteNotification(models.Model):
     fromuser = models.ForeignKey('User', on_delete=models.CASCADE, related_name="from user+")
     touser = models.ForeignKey('User', on_delete=models.CASCADE, related_name="to user+")
-    voted_post = models.ForeignKey('blog.Post', on_delete=models.CASCADE)
+    voted_post = models.ForeignKey('blog.Post', on_delete=models.CASCADE, related_name="voted post+")
     message = models.TextField(max_length=300)
     status = models.CharField(max_length=10, choices=NOTIFICATION_STATUS, default='unread')
 
     def __str__(self):
-        return f"<Post Notification: {self.fromuser.username}-{self.touser.username}({self.post})>"
+        return f"<Post Notification: {self.fromuser.username}-{self.touser.username}({self.voted_post})>"
