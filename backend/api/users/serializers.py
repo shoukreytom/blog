@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.db import IntegrityError
 
-from users.models import Profile, User, FollowNotification, VoteNotification
+from users.models import Profile, User, Notification
 from .utils import JWT_PAYLOAD_HANDLER, JWT_ENCODE_HANDLER
 
 
@@ -121,23 +121,20 @@ class ProfileSerializer(serializers.ModelSerializer):
         return obj.following.count()
 
 
-class FollowNotificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FollowNotification
-        fields = ['id', 'fromuser', 'message', 'status']
-    
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['type'] = 'follow'
-        return data
+class NotificationSerializer(serializers.ModelSerializer):
 
-
-class VoteNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = VoteNotification
-        fields = ['id', 'fromuser', 'touser', 'voted_post', 'message', 'status']
+        model = Notification
+        fields = ['id']
     
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['type'] = 'vote'
+    def to_representation(self, instance, *args, **kwargs):
+        data = super().to_representation(instance, *args, **kwargs)
+        notif_type = "follow" if instance.content_type.model=="follownotification" else "vote"
+        data['from_user'] = instance.content.fromuser.id
+        data['message'] = instance.content.message
+        data['type'] = notif_type
+        if notif_type == "vote":
+            data['voted_post'] = instance.content.voted_post.id
+        data['status'] = instance.status
+        data['created'] = instance.content.created
         return data

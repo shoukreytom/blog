@@ -2,6 +2,9 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 from .managers import UserManager
 from .utils import upload_avatar_to, NOTIFICATION_TYPES, NOTIFICATION_STATUS
@@ -69,22 +72,48 @@ class Profile(models.Model):
         return f"<Profile <User {self.user.username}>>"
 
 
-class FollowNotification(models.Model):
+class NotificationBase(models.Model):
     fromuser = models.ForeignKey('User', on_delete=models.CASCADE, related_name="from user+")
-    touser = models.ForeignKey('User', on_delete=models.CASCADE, related_name="to user+")
-    message = models.TextField(max_length=300)
-    status = models.CharField(max_length=10, choices=NOTIFICATION_STATUS, default='unread')
+    message = models.TextField(max_length=500)
+    created = models.DateTimeField(auto_now_add=True)
+
+
+    class Meta:
+        abstract = True
+
+
+class FollowNotification(NotificationBase):
 
     def __str__(self):
-        return f"<Follow Notification: {self.fromuser.username}-{self.touser.username}>"
+        return f"<Notification from: {self.fromuser.username}>"
 
 
-class VoteNotification(models.Model):
-    fromuser = models.ForeignKey('User', on_delete=models.CASCADE, related_name="from user+")
-    touser = models.ForeignKey('User', on_delete=models.CASCADE, related_name="to user+")
+class VoteNotification(NotificationBase):
     voted_post = models.ForeignKey('blog.Post', on_delete=models.CASCADE, related_name="voted post+")
-    message = models.TextField(max_length=300)
-    status = models.CharField(max_length=10, choices=NOTIFICATION_STATUS, default='unread')
 
     def __str__(self):
-        return f"<Post Notification: {self.fromuser.username}-{self.touser.username}({self.voted_post})>"
+        return f"<Notification from: {self.fromuser.username}>"
+
+
+class Notification(models.Model):
+    TYPES_LIMIT = models.Q(app_label="users", model="follownotification") | models.Q(app_label="users", model="votenotification")
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name="notifications")
+    follow_notification = models.ForeignKey(FollowNotification, blank=True, null=True, on_delete=models.SET_NULL)
+    vote_notification = models.ForeignKey(VoteNotification, blank=True, null=True, on_delete=models.SET_NULL)
+    content_type = models.ForeignKey(
+                        ContentType, 
+                        on_delete=models.CASCADE,
+                        limit_choices_to=TYPES_LIMIT
+                    )
+    content = GenericForeignKey('content_type', 'id')
+    status = models.CharField(max_length=10, choices=NOTIFICATION_STATUS, default='unread')
+
+
+    def clean(self, *args, **kwargs):
+        if not self.follow_notification and not self.vote_notification:
+            raise ValidationError("follow notification or vote notification is required.")
+        if self.follow_notification and self.vote_notification:
+            raise ValidationError("you can't have more than one type in one notification message.")
+        if (self.content_type.model == "follownotification" and not self.follow_notification or 
+            self.content_type.model == "votenotification" and not self.vote_notification):
+            raise ValidationError("you should select the appropiate type for this notification.")

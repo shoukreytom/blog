@@ -4,7 +4,7 @@ from django.forms.models import BaseModelForm, ModelForm
 
 from .models import (
     User, EmailAddress, EmailConfirmation, PasswordReset, 
-    Profile, FollowNotification, VoteNotification
+    Profile, FollowNotification, VoteNotification, Notification
 )
 from .forms import UserRegisterationForm, UserChangeForm
 
@@ -64,17 +64,23 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(FollowNotification)
 class FollowNotificationsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'message', 'fromuser', 'touser', 'status']
+    list_display = ['id', 'fromuser', 'message', 'created']
     list_filter = [
-        "fromuser", "touser", "status"
+        "fromuser", "created", 
     ]
 
 @admin.register(VoteNotification)
 class VoteNotificationsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'message', 'fromuser', 'voted_post', 'touser', 'status']
+    list_display = ['id', 'fromuser', 'message', 'voted_post', 'created']
     list_filter = [
-        "fromuser", "touser", "voted_post", "status"
+        "fromuser", "voted_post", "created",
     ]
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ['id', 'content_type', 'status']
+    list_filter = ['user', 'status']
 
 
 @admin.register(EmailAddress)
