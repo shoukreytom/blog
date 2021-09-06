@@ -1,0 +1,8 @@
+{
+  "buildpacks": [
+    {
+      "url": "frontend/create-react-app"
+    }
+  ]
+}
+
