@@ -6,8 +6,7 @@ function App() {
       <header className="App-header">
         <nav>
           <ul>
-            <li><a href="">Home</a></li>
-            <li><a href="">Get Started</a></li>
+            <h1>Header</h1>
           </ul>
         </nav>
       </header>
