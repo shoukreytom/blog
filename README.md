@@ -1,6 +1,9 @@
 # Blog
     django blog for beginners
 
+# Servers
+* Back End: https://djangoblogdem.herokuapp.com/
+* Front End: https://blogdevpost.netlify.app/
 
 # Tools:
 1- Back End:
