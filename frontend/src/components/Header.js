@@ -1,6 +1,44 @@
 import React from "react";
+import { useCookies } from "react-cookie";
+
+function RightNavList(props) {
+  if (!props.token) {
+    return (
+      <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex">
+        <li className="nav-item">
+          <a className="nav-link mx-4" href="/login">
+            Login
+          </a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link mx-4" href="/signup">
+            Sign Up
+          </a>
+        </li>
+      </ul>
+    );
+  } else {
+    return (
+      <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex">
+        <li className="nav-item">
+          <a className="nav-link mx-4" href="/new">
+            New Post
+          </a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link mx-4" href="/profile">
+            Profile
+          </a>
+        </li>
+      </ul>
+    );
+  }
+}
 
 function Header() {
+  const [cookies, setCookie] = useCookies([]);
+  var token = "";
+  if (cookies) token = cookies.token;
   return (
     <header>
       <nav className="navbar navbar-expand-md navbar-light bg-light">
@@ -27,14 +65,7 @@ function Header() {
                 </a>
               </li>
             </ul>
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex">
-              <li className="nav-item">
-                <a className="nav-link mx-4" href="/login">Login</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link mx-4" href="/signup">Sign Up</a>
-              </li>
-            </ul>
+            <RightNavList token={token} />
           </div>
         </div>
       </nav>
