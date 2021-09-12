@@ -4,30 +4,30 @@ import { Redirect } from "react-router";
 import { useCookies } from "react-cookie";
 
 function LoginContent() {
-  const HOST = "https://djangoblogdemo.herokuapp.com/"
+  const HOST = "https://djangoblogdemo.herokuapp.com/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
-  const [cookies, setCookie] = useCookies([])
+  const [cookies, setCookie] = useCookies([]);
   const handle = (e) => {
     e.preventDefault();
-    if(email && password) {
+    if (email && password) {
       $.ajax({
         url: `${HOST}api/v1/users/auth/login/`,
         type: "post",
-        data: {"email": email, "password": password},
-        success: function(result) {
+        data: { email: email, password: password },
+        success: function (result) {
           setToken(result.token);
         },
-        error: function(error) {
+        error: function (error) {
           console.log(error);
-        }
-      })
+        },
+      });
     }
-  }
-  if(token) {
-    setCookie("token", token)
-    return <Redirect exact from="/login" to="/" />
+  };
+  if (token) {
+    setCookie("token", token);
+    if (cookies) return <Redirect exact from="/login" to="/" />;
   }
   return (
     <div className="d-flex col justify-content-center text-center py-5">
@@ -55,7 +55,9 @@ function LoginContent() {
             />
           </div>
         </fieldset>
-        <button className="btn btn-primary fw-bold my-4" onClick={handle}>Login</button>
+        <button className="btn btn-primary fw-bold my-4" onClick={handle}>
+          Login
+        </button>
       </form>
     </div>
   );

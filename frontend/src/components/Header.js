@@ -36,12 +36,12 @@ function RightNavList(props) {
 }
 
 function Header() {
-  const [cookies, setCookie] = useCookies([]);
+  const [cookies, ] = useCookies([]);
   var token = "";
   if (cookies) token = cookies.token;
   return (
     <header>
-      <nav className="navbar navbar-expand-md navbar-light bg-light">
+      <nav className="navbar navbar-expand-md navbar-light bg-light border-bottom">
         <div className="container-fluid">
           <a className="navbar-brand mx-5" href="/">
             BlogDevPost
