@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import $ from "jquery";
 import { Redirect } from "react-router";
-import { useCookies } from "react-cookie";
 
 function SignupContent() {
   const HOST = "https://djangoblogdemo.herokuapp.com/";
