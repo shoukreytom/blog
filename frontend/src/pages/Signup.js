@@ -1,14 +1,14 @@
-import React from 'react'
-import Header from '../components/Header';
+import React from "react";
+import Header from "../components/Header";
+import SignupContent from "../components/SignupContent";
 
-
-//TODO: implement signup
 function Signup() {
-    return(
-        <div>
-            <Header />
-        </div>
-    );
+  return (
+    <div>
+      <Header />
+      <SignupContent />
+    </div>
+  );
 }
 
 export default Signup;
