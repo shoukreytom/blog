@@ -9,6 +9,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'author', 'title', 
                 'content', 'cover_photo', 
                 'status', 'upvotes', 'downvotes',
+                'created', 'updated',
         ]
         read_only_fields = ['author', ]
 
@@ -18,7 +19,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['id', 'author', 'post', 
                 'text', 'status', 'upvotes', 
-                'downvotes',
+                'downvotes', 'created', 'updated',
         ]
         read_only_fields = ['author', 'post']
 
@@ -28,6 +29,6 @@ class ReplySerializer(serializers.ModelSerializer):
         model = Reply
         fields = ['id', 'author', 'comment', 
                 'text', 'status', 'upvotes',
-                'downvotes',
+                'downvotes', 'created', 'updated',
         ]
         read_only_fields = ['author', 'comment']
