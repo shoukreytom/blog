@@ -13,10 +13,8 @@ class Posts extends React.Component {
 
   componentDidMount() {
     const HOST = "https://djangoblogdemo.herokuapp.com/";
-    const key = `Token ${this.props.token}`;
     fetch(`${HOST}api/v1/posts/`, {
       method: "get",
-      headers: { Authorization: key },
     })
       .then((res) => res.json())
       .then(
@@ -45,7 +43,9 @@ class Posts extends React.Component {
       return (
         <div>
           {posts.map((item) => (
-            <PostItem key={item.id} post={item} />
+            <div className="row">
+              <PostItem key={item.id} post={item} />
+            </div>
           ))}
         </div>
       );

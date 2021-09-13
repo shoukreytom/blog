@@ -1,24 +1,18 @@
 import React from "react";
-import { useCookies } from "react-cookie";
 import Header from "../components/Header";
 import Posts from "../components/Posts";
+// import TopPostsSidebar from "../components/TopPostsSidebar";
+// import { useCookies } from "react-cookie";
 
 function Home() {
-  const [cookies] = useCookies([]);
-  if (cookies) {
-    return (
-      <div>
-        <Header />
-        <Posts token={cookies.token} />
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <Header />
-      </div>
-    );
-  }
+  // const [cookies] = useCookies([]);
+  return (
+    <div>
+      <Header />
+      <Posts />
+      {/* <TopPostsSidebar /> */}
+    </div>
+  )
 }
 
 export default Home;
